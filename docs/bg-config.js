@@ -3,7 +3,7 @@
 const BG = {
 
   // ── Stars ──
-  starCount: 1000,
+  starCount: 5000,
   starMinR: 0.1,
   starMaxR: 0.5,
   starTwinkleMin: 0.1,
@@ -12,11 +12,11 @@ const BG = {
   starBrightnessMax: 0.85,
 
   // ── Blackhole ──
-  bhSize: 128,
-  bhSpeed: 0.5,
+  bhSize: 24,
+  bhSpeed: 0.1,
 
   // ── Einstein Ring ──
-  ringMultiplier: 1.1,
+  ringMultiplier: 3,
 
   // ── Gravitational Lensing ──
   lensingRange: 1,            // 1 = whole page, 0.5 = 50% of viewport
