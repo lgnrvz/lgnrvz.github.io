@@ -5,7 +5,7 @@ const BG = {
   // ── Stars ──
   starCount: 1000,
   starMinR: 0.1,
-  starMaxR: 0.7,
+  starMaxR: 0.5,
   starTwinkleMin: 0.1,
   starTwinkleMax: 1,
   starBrightnessMin: 0.35,
@@ -16,7 +16,7 @@ const BG = {
   bhSpeed: 0.5,
 
   // ── Einstein Ring ──
-  ringMultiplier: 1.6,
+  ringMultiplier: 1.1,
 
   // ── Gravitational Lensing ──
   lensingRange: 1,            // 1 = whole page, 0.5 = 50% of viewport
@@ -24,6 +24,5 @@ const BG = {
   arcMaxLength: 0.8,          // radians (~45°)
   magnification: 2,
   maxMagnification: 6,
-  innerCutoff: 0.3,
 
 };

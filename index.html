@@ -216,7 +216,6 @@ document.addEventListener('keydown', function(e) {
     if(bh.y > H - margin) { bh.y = H - margin; bh.vy *= -1; }
 
     // ── Draw stars ──
-    const cutoff = bh.innerR * (C.innerCutoff || 0.3);
     const arcMult = C.arcStrength || 0.05;
     const arcMax = C.arcMaxLength || 0.8;
     const magStr = C.magnification || 2;
@@ -227,11 +226,10 @@ document.addEventListener('keydown', function(e) {
     for(const s of stars){
       const dx = s.x - bx;
       const dy = s.y - by;
-      const dist = Math.sqrt(dx*dx + dy*dy);
+      const dist = Math.max(0.01, Math.sqrt(dx*dx + dy*dy));
       const angle = Math.atan2(dy, dx);
 
-      if(dist > cutoff){
-        if(dist < lensRange){
+      if(dist < lensRange){
           // Einstein ring lensing
           const apparentR = 0.5 * (dist + Math.sqrt(dist*dist + 4*ringR*ringR));
           const sf = ringR / Math.max(dist, ringR * 0.2);
@@ -255,7 +253,6 @@ document.addEventListener('keydown', function(e) {
           ctx.arc(s.x, s.y, Math.max(0.1, s.r+Math.sin(t*2+s.phase)*0.15), 0, Math.PI*2);
           ctx.fill();
         }
-      }
     }
     ctx.globalAlpha = 1;
 
