@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="docs/css/style.css" />
+  <script src="docs/bg-config.js"></script>
 </head>
 <body>
 
@@ -163,89 +164,97 @@ document.addEventListener('keydown', function(e) {
   c.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
   document.body.insertBefore(c, document.body.firstChild);
   const ctx = c.getContext('2d');
+  // Guard all arc() calls against negative radius
+  const origArc = ctx.arc.bind(ctx);
+  ctx.arc = function(x,y,r,s,e) { origArc(x,y,Math.max(0.1,r||0),s,e); };
   let W, H;
   function resize(){ W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
   resize();
   window.addEventListener('resize', resize);
 
-  // Stars - 50% more = 337
+  // Config
+  const C = typeof BG !== 'undefined' ? BG : {};
+
+  // Stars
   const starColors = ['#ffffff','#ffe4b5','#b0c4ff','#ffb0b0','#c8e6ff','#f0d0ff'];
-  const stars = Array.from({length:337},()=> ({
+  const stars = Array.from({length: C.starCount || 337},()=>({
     x: Math.random()*W, y: Math.random()*H,
-    r: 0.4+Math.random()*1.25,
+    r: (C.starMinR||0.4)+Math.random()*((C.starMaxR||1.65)-(C.starMinR||0.4)),
     c: starColors[Math.floor(Math.random()*starColors.length)],
-    speed: 0.2+Math.random()*1.2,
+    speed: (C.starTwinkleMin||0.2)+Math.random()*((C.starTwinkleMax||1.4)-(C.starTwinkleMin||0.2)),
     phase: Math.random()*Math.PI*2,
-    baseAlpha: 0.35+Math.random()*0.5,
+    baseAlpha: (C.starBrightnessMin||0.35)+Math.random()*((C.starBrightnessMax||0.85)-(C.starBrightnessMin||0.35)),
   }));
 
-  // Blackhole - 128px, bouncing across page
+  // Blackhole
   const bh = {
     x: W*0.3, y: H*0.3,
-    innerR: 128,
-    vx: (Math.random()-0.5)*0.6,
-    vy: (Math.random()-0.5)*0.6,
+    innerR: C.bhSize || 128,
+    vx: (Math.random()-0.5)*(C.bhSpeed||0.6),
+    vy: (Math.random()-0.5)*(C.bhSpeed||0.6),
   };
 
-  // Einstein radius (where the ring forms)
-  const ringR = bh.innerR * 1.6;  // Einstein ring radius
+  // Einstein ring radius
+  const ringR = bh.innerR * (C.ringMultiplier || 1.6);
+
+  // Lensing range
+  const lensRange = Math.min(W, H) * (C.lensingRange || 1);
 
   function draw(){
+    try {
     ctx.clearRect(0,0,W,H);
     const t = Date.now()*0.001;
     const bx=bh.x, by=bh.y;
     const margin = bh.innerR*1.4;
 
-    // ── Move blackhole (bouncing ball) ──
+    // Move blackhole
     bh.x += bh.vx;
     bh.y += bh.vy;
-
-    // Bounce off edges
     if(bh.x < margin) { bh.x = margin; bh.vx *= -1; }
     if(bh.x > W - margin) { bh.x = W - margin; bh.vx *= -1; }
     if(bh.y < margin) { bh.y = margin; bh.vy *= -1; }
     if(bh.y > H - margin) { bh.y = H - margin; bh.vy *= -1; }
 
-    // ── Stars with Einstein ring lensing (tangential arcs) ──
+    // ── Draw stars ──
+    const cutoff = bh.innerR * (C.innerCutoff || 0.3);
+    const arcMult = C.arcStrength || 0.05;
+    const arcMax = C.arcMaxLength || 0.8;
+    const magStr = C.magnification || 2;
+    const maxMag = C.maxMagnification || 6;
+
     ctx.lineCap = 'round';
+
     for(const s of stars){
       const dx = s.x - bx;
       const dy = s.y - by;
       const dist = Math.sqrt(dx*dx + dy*dy);
       const angle = Math.atan2(dy, dx);
 
-      if(dist > bh.innerR * 0.3){
-        // Schwarzschild lensing: apparent radial position
-        const thetaE = ringR;
-        const beta = dist;
-        // Lens equation: θ = 0.5 * (β + sqrt(β² + 4θE²))
-        const apparentR = 0.5 * (beta + Math.sqrt(beta*beta + 4*thetaE*thetaE));
-
-        // Position of the lensed image (always displaced outward from BH)
-        const sx = bx + Math.cos(angle) * apparentR;
-        const sy = by + Math.sin(angle) * apparentR;
-
-        // Tangential stretching: maximum at the Einstein ring
-        const stretchFactor = thetaE / Math.max(beta, thetaE * 0.2);
-        const arcLength = Math.min(0.8, 0.05 * stretchFactor * stretchFactor);
-
-        // Magnification
-        const magnify = Math.min(6, 1 + 2 * Math.pow(thetaE / Math.max(beta, thetaE*0.3), 2));
-        const lineW = (s.r + Math.sin(t*2+s.phase)*0.15) * Math.min(3, magnify);
-
-        // Perpendicular compression (squeezed)
-        const squeeze = Math.min(0.8, 1 / Math.max(1, stretchFactor * 0.3));
-
-        // Twinkle
-        const a = s.baseAlpha + Math.sin(t*s.speed+s.phase)*0.35;
-        ctx.globalAlpha = Math.max(0.1, Math.min(1, a * magnify));
-        ctx.strokeStyle = s.c;
-        ctx.lineWidth = lineW * squeeze;
-
-        // Draw as an arc segment centered on the blackhole (tangential lensing)
-        ctx.beginPath();
-        ctx.arc(bx, by, apparentR, angle - arcLength, angle + arcLength);
-        ctx.stroke();
+      if(dist > cutoff){
+        if(dist < lensRange){
+          // Einstein ring lensing
+          const apparentR = 0.5 * (dist + Math.sqrt(dist*dist + 4*ringR*ringR));
+          const sf = ringR / Math.max(dist, ringR * 0.2);
+          const arcLen = Math.min(arcMax, arcMult * sf * sf);
+          const mag = Math.min(maxMag, 1 + magStr * Math.pow(ringR / Math.max(dist, ringR*0.3), 2));
+          const lw = Math.max(0.1, (s.r + Math.sin(t*2+s.phase)*0.15) * Math.min(3, mag));
+          const sq = Math.min(0.8, 1 / Math.max(1, sf * 0.3));
+          const a = s.baseAlpha + Math.sin(t*s.speed+s.phase)*0.35;
+          ctx.globalAlpha = Math.max(0.1, Math.min(1, a * mag));
+          ctx.strokeStyle = s.c;
+          ctx.lineWidth = lw * sq;
+          ctx.beginPath();
+          ctx.arc(bx, by, Math.max(0.1, apparentR), angle - arcLen, angle + arcLen);
+          ctx.stroke();
+        } else {
+          // Normal star (outside lensing range)
+          const a = s.baseAlpha + Math.sin(t*s.speed+s.phase)*0.35;
+          ctx.globalAlpha = Math.max(0.1, a);
+          ctx.fillStyle = s.c;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, Math.max(0.1, s.r+Math.sin(t*2+s.phase)*0.15), 0, Math.PI*2);
+          ctx.fill();
+        }
       }
     }
     ctx.globalAlpha = 1;
@@ -256,32 +265,31 @@ document.addEventListener('keydown', function(e) {
     ctx.save();
     ctx.translate(bx, by);
 
-    // ── Einstein ring glow (around the BH) ──
-    const ringGlow = ctx.createRadialGradient(0,0,ringR-6, 0,0,ringR+8);
-    ringGlow.addColorStop(0,'rgba(60,40,120,0)');
-    ringGlow.addColorStop(0.3,'rgba(80,60,160,0.08)');
-    ringGlow.addColorStop(0.5,'rgba(100,80,200,0.12)');
-    ringGlow.addColorStop(0.7,'rgba(80,60,160,0.08)');
-    ringGlow.addColorStop(1,'rgba(60,40,120,0)');
-    ctx.fillStyle=ringGlow; ctx.beginPath(); ctx.arc(0,0,ringR+8,0,Math.PI*2); ctx.fill();
+    // Einstein ring glow
+    const rg = ctx.createRadialGradient(0,0,ringR-6, 0,0,ringR+8);
+    rg.addColorStop(0,'rgba(60,40,120,0)');
+    rg.addColorStop(0.3,'rgba(80,60,160,0.08)');
+    rg.addColorStop(0.5,'rgba(100,80,200,0.12)');
+    rg.addColorStop(0.7,'rgba(80,60,160,0.08)');
+    rg.addColorStop(1,'rgba(60,40,120,0)');
+    ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(0,0,Math.max(0.1,ringR+8),0,Math.PI*2); ctx.fill();
 
-    // Thin Einstein ring line
     ctx.globalAlpha = 0.08 + Math.sin(t*0.3)*0.04;
     ctx.strokeStyle = '#6688cc';
     ctx.lineWidth = 1.2;
     ctx.beginPath();
-    ctx.arc(0,0,ringR,0,Math.PI*2);
+    ctx.arc(0,0,Math.max(0.1,ringR),0,Math.PI*2);
     ctx.stroke();
 
-    // ── 1. Outer glow halo ──
+    // Outer glow
     const hg = ctx.createRadialGradient(0,0,0, 0,0,ir*1.8);
     hg.addColorStop(0,'rgba(10,5,30,0.25)');
     hg.addColorStop(0.4,'rgba(20,10,50,0.12)');
     hg.addColorStop(0.7,'rgba(30,15,60,0.05)');
     hg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=hg; ctx.beginPath(); ctx.arc(0,0,ir*1.8,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=hg; ctx.beginPath(); ctx.arc(0,0,Math.max(0.1,ir*1.8),0,Math.PI*2); ctx.fill();
 
-    // ── 2. Black hole shadow - PURE BLACK ──
+    // Black hole shadow
     ctx.globalAlpha = 1;
     const sh = ctx.createRadialGradient(0,0,0, 0,0,ir);
     sh.addColorStop(0,'rgba(0,0,0,1)');
@@ -289,20 +297,28 @@ document.addEventListener('keydown', function(e) {
     sh.addColorStop(0.88,'rgba(0,0,0,1)');
     sh.addColorStop(0.95,'rgba(0,0,0,0.8)');
     sh.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=sh; ctx.beginPath(); ctx.arc(0,0,ir,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=sh; ctx.beginPath(); ctx.arc(0,0,Math.max(0.1,ir),0,Math.PI*2); ctx.fill();
 
-    // ── 3. Photon ring ──
+    // Photon ring
     ctx.globalAlpha = 0.12+Math.sin(t*0.5)*0.06;
     ctx.strokeStyle = '#4466aa';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.arc(0,0,ir*0.92,0,Math.PI*2);
+    ctx.arc(0,0,Math.max(0.1,ir*0.92),0,Math.PI*2);
     ctx.stroke();
 
     ctx.globalAlpha = 1;
     ctx.restore();
 
     requestAnimationFrame(draw);
+    } catch(e) { 
+      if(e.message.includes('radius')) {
+        // Find which arc is failing
+        const s = e.stack || '';
+        console.error('RADIUS ERROR:', e.message, s.split('\n').slice(1,3).join(' → ')); 
+      }
+      requestAnimationFrame(draw); 
+    }
   }
   draw();
 })();
