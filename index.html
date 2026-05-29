@@ -1,190 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9175633718531672"
-     crossorigin="anonymous"></script>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="google-adsense-account" content="ca-pub-9175633718531672">
-    <title>NRVZ - Google Play Developer Page</title>
-    <style>
-        body {
-          font-family: 'Roboto', sans-serif;
-          background-color: #fff;
-          margin: 0;
-          padding: 0;
-          color: #202124;
-        }
-        header {
-          background-color: #1a73e8;
-          color: white;
-          padding: 1rem 2rem;
-        }
-        .container {
-          padding: 2rem;
-          max-width: 1000px;
-          margin: 0 auto;
-        }
-        .profile {
-          display: flex;
-          align-items: center;
-          margin-bottom: 2rem;
-        }
-        .profile img {
-          width: 80px;
-          height: 80px;
-          border-radius: 8px;
-          margin-right: 1.5rem;
-        }
-        .profile h1 {
-          margin: 0;
-          font-size: 2rem;
-        }
-        .app-list {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 1.5rem;
-        }
-        .app {
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          padding: 1rem;
-          text-align: center;
-          transition: box-shadow 0.2s;
-        }
-        .app:hover {
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .app img {
-          width: 80px;
-          height: 80px;
-          border-radius: 16px;
-          margin-bottom: 0.5rem;
-        }
-        .app h3 {
-          margin: 0.5rem 0 0.2rem;
-          font-size: 1rem;
-        }
-        .app p {
-          font-size: 0.9rem;
-          color: #666;
-        }
-        footer {
-          text-align: center;
-          padding: 2rem;
-          font-size: 0.8rem;
-          color: #888;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-adsense-account" content="ca-pub-9175633718531672" />
+  <title>NRVZ — Google Play Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="docs/css/style.css" />
 </head>
 <body>
 
+<div id="content">
 <header>
-    <h1>NRVZ on Google Play</h1>
+  <h1>NRVZ</h1>
+  <p>Android apps built with purpose.</p>
 </header>
 
 <div class="container">
-    <div class="profile">
-        <div>
-            <h1>NRVZ</h1>
-            <a href="https://play.google.com/store/apps/developer?id=NRVZ" target="_blank">Visit on Google Play</a>
+
+  <h2 class="section-title">Published Apps</h2>
+
+  <div class="app-list">
+
+    <div class="app-card">
+      <img class="main-shot" src="docs/imgs/dict1.webp" alt="Offline English Dictionary"
+           data-gallery='["docs/imgs/dict1.webp","docs/imgs/dict2.webp","docs/imgs/dict3.webp"]'
+           onclick="openLightbox(this)" loading="lazy" />
+      <div class="card-body">
+        <div class="icon-row">
+          <img src="https://play-lh.googleusercontent.com/CDSfihVlx1mjLi48X1TCnw7l4baQMbxdzxZv7kkxDprezyB53bS4iFj2G3a9rxWC1Q=w240-h480-rw" alt="icon" />
+          <h3>Offline English Dictionary</h3>
         </div>
+        <p class="tagline">5.0&star; &middot; 10K+ Downloads</p>
+        <p class="description">
+          Modern offline English dictionary with Material You design, dark mode, and gender-neutral definitions.
+          100% offline with text-to-speech and clickable synonyms.
+        </p>
+        <a class="cta" href="https://play.google.com/store/apps/details?id=com.nrvz.englishdictionary" target="_blank" rel="noopener">
+          Get on Google Play &rarr;
+        </a>
+      </div>
     </div>
 
-    <h2>Published Apps</h2>
-    <div class="app-list">
-        <!-- Example app card -->
-        <div class="app">
-            <a href="https://play.google.com/store/apps/details?id=com.nrvz.englishdictionary">
-                <img src="https://play-lh.googleusercontent.com/CDSfihVlx1mjLi48X1TCnw7l4baQMbxdzxZv7kkxDprezyB53bS4iFj2G3a9rxWC1Q=w240-h480-rw"
-                     alt="App Icon">
-            </a>
-            <h3>Offline English Dictionary</h3>
-            <h2>Your Modern & Offline English Dictionary</h2>
-
-            <p>
-                Discover a fast, modern, and easy-to-use English dictionary — completely free and works offline!
-                Instantly look up thousands of word meanings with a sleek <strong>Material You</strong> design and
-                <strong>dark mode</strong> support.
-            </p>
-
-            <h3>Key Features:</h3>
-            <ul>
-                <li>Quick word search with recent history</li>
-                <li>Hear pronunciations with text-to-speech</li>
-                <li>Clickable synonyms to expand your vocabulary</li>
-                <li>100% offline access, no internet required</li>
-                <li>Gender-neutral definitions & examples</li>
-            </ul>
-
-            <p>Perfect for learners, readers, and word nerds alike. <strong>More features coming soon!</strong></p>
-
+    <div class="app-card">
+      <img class="main-shot" src="docs/imgs/ff1.webp" alt="FinFlow"
+           data-gallery='["docs/imgs/ff1.webp","docs/imgs/ff2.webp"]'
+           onclick="openLightbox(this)" loading="lazy" />
+      <div class="card-body">
+        <div class="icon-row">
+          <img src="https://play-lh.googleusercontent.com/vTR7bPfmHnulWWSYxnMVkuIHIIqXZRDVnxGi0K3an0H9SjsgwxuFtU-Otc5YZ0y3eg=w240-h480-rw" alt="icon" />
+          <h3>FinFlow</h3>
         </div>
-
-        <div class="app">
-            <a href="https://play.google.com/store/apps/details?id=com.nrvz.finflow">
-                <img src="https://play-lh.googleusercontent.com/vTR7bPfmHnulWWSYxnMVkuIHIIqXZRDVnxGi0K3an0H9SjsgwxuFtU-Otc5YZ0y3eg=w240-h480-rw"
-                     alt="App Icon">
-            </a>
-            <h3>FinFlow</h3>
-            <h2>FinFlow – Your Offline Financial Tracker</h2>
-
-            <p>
-                Welcome to <strong>FinFlow</strong>, the ultimate offline solution for managing your personal finances.
-                Designed for simplicity and privacy, FinFlow lets you track your expenses without requiring an internet
-                connection.
-            </p>
-
-            <h3>Key Features:</h3>
-            <ul>
-                <li>Works 100% offline — no internet needed to add, view, or edit your transactions.</li>
-                <li>Quickly input expenses with a user-friendly interface and smart categorization.</li>
-                <li>Create your own categories to tailor the app to your personal financial goals.</li>
-                <li>View breakdowns of your spending across time to make smarter money decisions.</li>
-                <li>All data is stored on your device — nothing goes online.</li>
-            </ul>
-
-            <p><strong>Download FinFlow today and take control of your finances — offline and secure.</strong></p>
-
-        </div>
-
-        <div class="app">
-            <a href="https://play.google.com/store/apps/details?id=com.nrvz.mathlakas">
-                <img src="https://play-lh.googleusercontent.com/GRn5_OxJQdB6x5NOrgr0DK8mzHaazn8QUiPWRyJac2mbj9ctRd629AUL0JvJ8mT-rGA=w240-h480-rw"
-                     alt="App Icon">
-            </a>
-            <h3>MathLakas</h3>
-            <h2>Welcome to MathLakas!</h2>
-
-            <p>Where your math skills determine the challenge. Dive into an exciting world of dynamic math problems that
-                adapt to your performance!</p>
-
-            <p>
-                <strong>MathLakas</strong> automatically adjusts difficulty as you play. The better you perform, the
-                more intense and rewarding the challenges become.
-            </p>
-
-            <h3>Features:</h3>
-            <ul>
-                <li>Adaptive difficulty that matches your skill level</li>
-                <li>Lightning-fast addition & brain-teasing subtraction</li>
-                <li>Global competition with leaderboards and achievements</li>
-                <li>Score streaks to boost your points and climb the ranks</li>
-            </ul>
-
-            <p>
-                <strong>Download now</strong> and unlock your inner math champion!
-            </p>
-
-        </div>
-
+        <p class="tagline">1K+ Downloads</p>
+        <p class="description">
+          Secure offline personal finance tracker with smart categorization, expense breakdowns, and CSV export.
+          All data stays on your device &mdash; no internet required.
+        </p>
+        <a class="cta" href="https://play.google.com/store/apps/details?id=com.nrvz.finflow" target="_blank" rel="noopener">
+          Get on Google Play &rarr;
+        </a>
+      </div>
     </div>
+
+    <div class="app-card">
+      <img class="main-shot" src="docs/imgs/ml1.webp" alt="MathLakas"
+           data-gallery='["docs/imgs/ml1.webp","docs/imgs/ml2.webp","docs/imgs/ml3.webp"]'
+           onclick="openLightbox(this)" loading="lazy" />
+      <div class="card-body">
+        <div class="icon-row">
+          <img src="https://play-lh.googleusercontent.com/GRn5_OxJQdB6x5NOrgr0DK8mzHaazn8QUiPWRyJac2mbj9ctRd629AUL0JvJ8mT-rGA=w240-h480-rw" alt="icon" />
+          <h3>MathLakas</h3>
+        </div>
+        <p class="tagline">Adaptive Math Challenge</p>
+        <p class="description">
+          Adaptive math game with real-time PvP, leaderboards, achievements, and score streaks.
+          Difficulty adjusts to your skill level automatically.
+        </p>
+        <a class="cta" href="https://play.google.com/store/apps/details?id=com.nrvz.mathlakas" target="_blank" rel="noopener">
+          Get on Google Play &rarr;
+        </a>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <footer>
-    Google Play Developer page.<br/>
-    &copy; 2025 NRVZ
+  <p>&copy; 2026 NRVZ &middot; <a href="nrvz_privacy_policy.html">Privacy Policy</a> &middot; <a href="resume.pdf" target="_blank">Find out more about the developer</a></p>
 </footer>
+</div>
 
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightboxOutside(event)">
+  <button class="lb-close" onclick="closeLightbox()">&times;</button>
+  <button class="lb-nav lb-prev" id="lbPrev" onclick="navLightbox(-1)">&#8249;</button>
+  <img class="lb-img" id="lbImg" src="" alt="" />
+  <button class="lb-nav lb-next" id="lbNext" onclick="navLightbox(1)">&#8250;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+// ─── Lightbox ───
+let lbImages = [];
+let lbIndex = 0;
+
+function openLightbox(img) {
+  lbImages = JSON.parse(img.getAttribute('data-gallery'));
+  lbIndex = 0;
+  showLightboxImage();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function showLightboxImage() {
+  const img = document.getElementById('lbImg');
+  img.src = lbImages[lbIndex];
+  const counter = document.getElementById('lbCounter');
+  counter.textContent = lbImages.length > 1 ? (lbIndex + 1) + ' / ' + lbImages.length : '';
+  document.getElementById('lbPrev').style.display = lbIndex > 0 ? 'flex' : 'none';
+  document.getElementById('lbNext').style.display = lbIndex < lbImages.length - 1 ? 'flex' : 'none';
+}
+
+function navLightbox(dir) {
+  lbIndex += dir;
+  if (lbIndex < 0) lbIndex = 0;
+  if (lbIndex >= lbImages.length) lbIndex = lbImages.length - 1;
+  showLightboxImage();
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeLightboxOutside(e) {
+  if (e.target === e.currentTarget) closeLightbox();
+}
+
+document.addEventListener('keydown', function(e) {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navLightbox(-1);
+  if (e.key === 'ArrowRight') navLightbox(1);
+});
+
+// ─── Stars & Blackhole Bouncing ───
+(function(){
+  const c = document.createElement('canvas');
+  c.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+  document.body.insertBefore(c, document.body.firstChild);
+  const ctx = c.getContext('2d');
+  let W, H;
+  function resize(){ W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Stars - 50% more = 337
+  const starColors = ['#ffffff','#ffe4b5','#b0c4ff','#ffb0b0','#c8e6ff','#f0d0ff'];
+  const stars = Array.from({length:337},()=> ({
+    x: Math.random()*W, y: Math.random()*H,
+    r: 0.4+Math.random()*1.25,
+    c: starColors[Math.floor(Math.random()*starColors.length)],
+    speed: 0.2+Math.random()*1.2,
+    phase: Math.random()*Math.PI*2,
+    baseAlpha: 0.35+Math.random()*0.5,
+  }));
+
+  // Blackhole - 128px, bouncing across page
+  const bh = {
+    x: W*0.3, y: H*0.3,
+    innerR: 128,
+    vx: (Math.random()-0.5)*0.6,
+    vy: (Math.random()-0.5)*0.6,
+  };
+
+  // Einstein radius for strong gravity
+  const einsteinR = bh.innerR * 4;
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const t = Date.now()*0.001;
+    const bx=bh.x, by=bh.y;
+    const margin = bh.innerR*1.4;
+
+    // ── Move blackhole (bouncing ball) ──
+    bh.x += bh.vx;
+    bh.y += bh.vy;
+
+    // Bounce off edges
+    if(bh.x < margin) { bh.x = margin; bh.vx *= -1; }
+    if(bh.x > W - margin) { bh.x = W - margin; bh.vx *= -1; }
+    if(bh.y < margin) { bh.y = margin; bh.vy *= -1; }
+    if(bh.y > H - margin) { bh.y = H - margin; bh.vy *= -1; }
+
+    // ── Stars with gravitational lensing & elongation ──
+    for(const s of stars){
+      const dx = s.x - bx;
+      const dy = s.y - by;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+
+      if(dist > einsteinR*0.25){
+        const angle = Math.atan2(dy, dx);
+
+        // Displacement toward blackhole (stronger)
+        const lensStrength = Math.min(1, einsteinR / dist);
+        const displace = lensStrength * einsteinR * 0.2;
+        const sx = s.x - Math.cos(angle) * displace;
+        const sy = s.y - Math.sin(angle) * displace;
+
+        // Magnification
+        const magnify = 1 + 1.2 * Math.pow(einsteinR / Math.max(dist, einsteinR*0.25), 2);
+        const sizeMult = Math.min(5, magnify);
+
+        // Star elongation: stretched toward blackhole
+        const stretch = 1 + Math.pow(einsteinR / Math.max(dist, einsteinR*0.25), 2) * 0.5;
+        const cappedStretch = Math.min(8, stretch);
+        const baseR = (s.r + Math.sin(t*2+s.phase)*0.15) * sizeMult;
+        const rx = baseR;                   // width perpendicular to BH
+        const ry = baseR * cappedStretch;   // length pointing toward BH
+
+        // Twinkle
+        const a = s.baseAlpha + Math.sin(t*s.speed+s.phase)*0.35;
+        ctx.globalAlpha = Math.max(0.1, Math.min(1, a * magnify));
+        ctx.fillStyle = s.c;
+
+        // Draw as ellipse stretched toward blackhole
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.rotate(angle);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    // ── Blackhole ──
+    const ir = bh.innerR;
+
+    ctx.save();
+    ctx.translate(bx, by);
+
+    // ── 1. Outer glow halo ──
+    const hg = ctx.createRadialGradient(0,0,0, 0,0,ir*1.8);
+    hg.addColorStop(0,'rgba(10,5,30,0.25)');
+    hg.addColorStop(0.4,'rgba(20,10,50,0.12)');
+    hg.addColorStop(0.7,'rgba(30,15,60,0.05)');
+    hg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=hg; ctx.beginPath(); ctx.arc(0,0,ir*1.8,0,Math.PI*2); ctx.fill();
+
+    // ── 2. Black hole shadow - PURE BLACK ──
+    ctx.globalAlpha = 1;
+    const sh = ctx.createRadialGradient(0,0,0, 0,0,ir);
+    sh.addColorStop(0,'rgba(0,0,0,1)');
+    sh.addColorStop(0.75,'rgba(0,0,0,1)');
+    sh.addColorStop(0.88,'rgba(0,0,0,1)');
+    sh.addColorStop(0.95,'rgba(0,0,0,0.8)');
+    sh.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=sh; ctx.beginPath(); ctx.arc(0,0,ir,0,Math.PI*2); ctx.fill();
+
+    // ── 3. Photon ring ──
+    ctx.globalAlpha = 0.12+Math.sin(t*0.5)*0.06;
+    ctx.strokeStyle = '#4466aa';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(0,0,ir*0.92,0,Math.PI*2);
+    ctx.stroke();
+
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
 </body>
 </html>
