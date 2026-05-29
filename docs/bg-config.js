@@ -3,7 +3,7 @@
 const BG = {
 
   // ── Stars ──
-  starCount: 5000,
+  starCount: 3800,
   starMinR: 0.1,
   starMaxR: 0.5,
   starTwinkleMin: 0.1,
@@ -13,10 +13,14 @@ const BG = {
 
   // ── Blackhole ──
   bhSize: 24,
-  bhSpeed: 0.1,
+  bhSpeed: 0.2,
 
   // ── Einstein Ring ──
   ringMultiplier: 3,
+  ringColor: '#282828',   // ring stroke color
+  ringWidth: 0.8,          // ring stroke thickness
+  ringGlowColor: '#404040', // ring glow color (hex)
+  ringGlowWidth: 1.5,         // ring glow spread (px)
 
   // ── Gravitational Lensing ──
   lensingRange: 1,            // 1 = whole page, 0.5 = 50% of viewport
