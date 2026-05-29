@@ -12,6 +12,8 @@
 </head>
 <body>
 
+<button id="hideBtn" onclick="toggleContent()" title="Hide content">⊙</button>
+
 <div id="content">
 <header>
   <h1>NRVZ</h1>
@@ -135,6 +137,14 @@ function closeLightbox() {
   document.body.style.overflow = '';
 }
 
+function toggleContent() {
+  const c = document.getElementById('content');
+  const btn = document.getElementById('hideBtn');
+  const hidden = c.classList.toggle('hidden');
+  btn.textContent = hidden ? '◎' : '⊙';
+  btn.title = hidden ? 'Show content' : 'Hide content';
+}
+
 function closeLightboxOutside(e) {
   if (e.target === e.currentTarget) closeLightbox();
 }
@@ -177,8 +187,8 @@ document.addEventListener('keydown', function(e) {
     vy: (Math.random()-0.5)*0.6,
   };
 
-  // Einstein radius for strong gravity
-  const einsteinR = bh.innerR * 4;
+  // Einstein radius (where the ring forms)
+  const ringR = bh.innerR * 1.6;  // Einstein ring radius
 
   function draw(){
     ctx.clearRect(0,0,W,H);
@@ -196,45 +206,46 @@ document.addEventListener('keydown', function(e) {
     if(bh.y < margin) { bh.y = margin; bh.vy *= -1; }
     if(bh.y > H - margin) { bh.y = H - margin; bh.vy *= -1; }
 
-    // ── Stars with gravitational lensing & elongation ──
+    // ── Stars with Einstein ring lensing (tangential arcs) ──
+    ctx.lineCap = 'round';
     for(const s of stars){
       const dx = s.x - bx;
       const dy = s.y - by;
       const dist = Math.sqrt(dx*dx + dy*dy);
+      const angle = Math.atan2(dy, dx);
 
-      if(dist > einsteinR*0.25){
-        const angle = Math.atan2(dy, dx);
+      if(dist > bh.innerR * 0.3){
+        // Schwarzschild lensing: apparent radial position
+        const thetaE = ringR;
+        const beta = dist;
+        // Lens equation: θ = 0.5 * (β + sqrt(β² + 4θE²))
+        const apparentR = 0.5 * (beta + Math.sqrt(beta*beta + 4*thetaE*thetaE));
 
-        // Displacement toward blackhole (stronger)
-        const lensStrength = Math.min(1, einsteinR / dist);
-        const displace = lensStrength * einsteinR * 0.2;
-        const sx = s.x - Math.cos(angle) * displace;
-        const sy = s.y - Math.sin(angle) * displace;
+        // Position of the lensed image (always displaced outward from BH)
+        const sx = bx + Math.cos(angle) * apparentR;
+        const sy = by + Math.sin(angle) * apparentR;
+
+        // Tangential stretching: maximum at the Einstein ring
+        const stretchFactor = thetaE / Math.max(beta, thetaE * 0.2);
+        const arcLength = Math.min(0.8, 0.05 * stretchFactor * stretchFactor);
 
         // Magnification
-        const magnify = 1 + 1.2 * Math.pow(einsteinR / Math.max(dist, einsteinR*0.25), 2);
-        const sizeMult = Math.min(5, magnify);
+        const magnify = Math.min(6, 1 + 2 * Math.pow(thetaE / Math.max(beta, thetaE*0.3), 2));
+        const lineW = (s.r + Math.sin(t*2+s.phase)*0.15) * Math.min(3, magnify);
 
-        // Star elongation: stretched toward blackhole
-        const stretch = 1 + Math.pow(einsteinR / Math.max(dist, einsteinR*0.25), 2) * 0.5;
-        const cappedStretch = Math.min(8, stretch);
-        const baseR = (s.r + Math.sin(t*2+s.phase)*0.15) * sizeMult;
-        const rx = baseR;                   // width perpendicular to BH
-        const ry = baseR * cappedStretch;   // length pointing toward BH
+        // Perpendicular compression (squeezed)
+        const squeeze = Math.min(0.8, 1 / Math.max(1, stretchFactor * 0.3));
 
         // Twinkle
         const a = s.baseAlpha + Math.sin(t*s.speed+s.phase)*0.35;
         ctx.globalAlpha = Math.max(0.1, Math.min(1, a * magnify));
-        ctx.fillStyle = s.c;
+        ctx.strokeStyle = s.c;
+        ctx.lineWidth = lineW * squeeze;
 
-        // Draw as ellipse stretched toward blackhole
-        ctx.save();
-        ctx.translate(sx, sy);
-        ctx.rotate(angle);
+        // Draw as an arc segment centered on the blackhole (tangential lensing)
         ctx.beginPath();
-        ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI*2);
-        ctx.fill();
-        ctx.restore();
+        ctx.arc(bx, by, apparentR, angle - arcLength, angle + arcLength);
+        ctx.stroke();
       }
     }
     ctx.globalAlpha = 1;
@@ -244,6 +255,23 @@ document.addEventListener('keydown', function(e) {
 
     ctx.save();
     ctx.translate(bx, by);
+
+    // ── Einstein ring glow (around the BH) ──
+    const ringGlow = ctx.createRadialGradient(0,0,ringR-6, 0,0,ringR+8);
+    ringGlow.addColorStop(0,'rgba(60,40,120,0)');
+    ringGlow.addColorStop(0.3,'rgba(80,60,160,0.08)');
+    ringGlow.addColorStop(0.5,'rgba(100,80,200,0.12)');
+    ringGlow.addColorStop(0.7,'rgba(80,60,160,0.08)');
+    ringGlow.addColorStop(1,'rgba(60,40,120,0)');
+    ctx.fillStyle=ringGlow; ctx.beginPath(); ctx.arc(0,0,ringR+8,0,Math.PI*2); ctx.fill();
+
+    // Thin Einstein ring line
+    ctx.globalAlpha = 0.08 + Math.sin(t*0.3)*0.04;
+    ctx.strokeStyle = '#6688cc';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(0,0,ringR,0,Math.PI*2);
+    ctx.stroke();
 
     // ── 1. Outer glow halo ──
     const hg = ctx.createRadialGradient(0,0,0, 0,0,ir*1.8);
