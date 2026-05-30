@@ -13,6 +13,19 @@
 </head>
 <body>
 
+<!-- Settings button (top-left, always visible) -->
+<button id="settingsBtn" onclick="toggleSettings()" title="Background settings">⚙</button>
+
+<!-- Settings panel -->
+<div id="settingsPanel">
+  <div class="settings-header">
+    <span>⚙ Background Settings</span>
+    <button class="settings-close" onclick="toggleSettings()">&times;</button>
+  </div>
+  <div class="settings-body" id="settingsBody"></div>
+</div>
+
+<!-- Hide button (bottom-left) -->
 <button id="hideBtn" onclick="toggleContent()" title="Hide content">⊙</button>
 
 <div id="content">
@@ -141,9 +154,12 @@ function closeLightbox() {
 function toggleContent() {
   const c = document.getElementById('content');
   const btn = document.getElementById('hideBtn');
+  const settingsBtn = document.getElementById('settingsBtn');
   const hidden = c.classList.toggle('hidden');
   btn.textContent = hidden ? '◎' : '⊙';
   btn.title = hidden ? 'Show content' : 'Hide content';
+  settingsBtn.classList.toggle('visible', hidden);
+  if (!hidden && settingsOpen) toggleSettings();
 }
 
 function closeLightboxOutside(e) {
@@ -158,11 +174,134 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'ArrowRight') navLightbox(1);
 });
 
+// ─── Settings Panel ───
+const SETTINGS_DEF = [
+  { section: 'Stars' },
+  { key: 'starCount',       label: 'Count',         min: 50,   max: 8000, step: 10,  value: 4200 },
+  { key: 'starMinR',        label: 'Min Radius',     min: 0.05, max: 2,    step: 0.05, value: 0.1,  decimals: 2 },
+  { key: 'starMaxR',        label: 'Max Radius',     min: 0.1,  max: 5,    step: 0.05, value: 0.8,  decimals: 2 },
+  { key: 'starTwinkleMin',  label: 'Twinkle Min',    min: 0.05, max: 3,    step: 0.05, value: 0.2,  decimals: 2 },
+  { key: 'starTwinkleMax',  label: 'Twinkle Max',    min: 0.05, max: 3,    step: 0.05, value: 1,    decimals: 2 },
+  { key: 'starBrightnessMin', label: 'Brightness Min', min: 0.01, max: 1, step: 0.01, value: 0.15, decimals: 2 },
+  { key: 'starBrightnessMax', label: 'Brightness Max', min: 0.01, max: 1, step: 0.01, value: 0.95, decimals: 2 },
+  { section: 'Blackhole' },
+  { key: 'bhSize',          label: 'Size',           min: 5,    max: 200,  step: 1,   value: 24 },
+  { key: 'bhSpeed',         label: 'Speed',          min: 0.05, max: 5,    step: 0.05, value: 0.2, decimals: 2 },
+  { section: 'Einstein Ring' },
+  { key: 'ringMultiplier',  label: 'Ring Size',      min: 0.5,  max: 6,    step: 0.1, value: 3,   decimals: 1 },
+  { key: 'ringColor',       label: 'Ring Color',     type: 'color', value: '#282828' },
+  { key: 'ringWidth',       label: 'Ring Width',     min: 0.1,  max: 5,    step: 0.1, value: 0.9, decimals: 1 },
+  { key: 'ringGlowColor',   label: 'Glow Color',     type: 'color', value: '#404040' },
+  { key: 'ringGlowWidth',   label: 'Glow Width',     min: 0.5,  max: 20,   step: 0.5, value: 1.2, decimals: 1 },
+  { section: 'Gravitational Lensing' },
+  { key: 'lensingRange',    label: 'Range',          min: 0.1,  max: 1.5,  step: 0.05, value: 0.85, decimals: 2 },
+  { key: 'arcStrength',     label: 'Arc Strength',   min: 0.01, max: 0.3,  step: 0.01, value: 0.03, decimals: 2 },
+  { key: 'arcMaxLength',    label: 'Arc Max Length',  min: 0.1,  max: 1.5,  step: 0.01, value: 0.87, decimals: 2 },
+  { key: 'magnification',   label: 'Magnification',  min: 0.5,  max: 15,   step: 0.5, value: 2,   decimals: 1 },
+  { key: 'maxMagnification',label: 'Max Mag',        min: 0.5,  max: 20,   step: 0.5, value: 6,   decimals: 1 },
+];
+
+let settingsOpen = false;
+
+function toggleSettings() {
+  settingsOpen = !settingsOpen;
+  document.getElementById('settingsPanel').classList.toggle('open', settingsOpen);
+  document.getElementById('settingsBtn').classList.toggle('active', settingsOpen);
+}
+
+function buildSettings() {
+  const body = document.getElementById('settingsBody');
+  body.innerHTML = '';
+  for (const def of SETTINGS_DEF) {
+    if (def.section) {
+      const sec = document.createElement('div');
+      sec.className = 'settings-section';
+      sec.textContent = def.section;
+      body.appendChild(sec);
+      continue;
+    }
+    const row = document.createElement('div');
+    row.className = 'settings-row';
+
+    const label = document.createElement('label');
+    label.className = 'settings-label';
+    label.textContent = def.label;
+    row.appendChild(label);
+
+    if (def.type === 'color') {
+      const wrap = document.createElement('div');
+      wrap.className = 'settings-color-wrap';
+      const inp = document.createElement('input');
+      inp.type = 'color';
+      inp.className = 'settings-color';
+      inp.value = def.value;
+      inp.dataset.key = def.key;
+      inp.addEventListener('input', onSettingChange);
+      wrap.appendChild(inp);
+      const hexSpan = document.createElement('span');
+      hexSpan.className = 'settings-hex';
+      hexSpan.id = 'hex-' + def.key;
+      hexSpan.textContent = def.value;
+      wrap.appendChild(hexSpan);
+      row.appendChild(wrap);
+    } else {
+      const slider = document.createElement('input');
+      slider.type = 'range';
+      slider.className = 'settings-slider';
+      slider.min = def.min;
+      slider.max = def.max;
+      slider.step = def.step;
+      slider.value = def.value;
+      slider.dataset.key = def.key;
+      slider.dataset.decimals = def.decimals || 0;
+      slider.addEventListener('input', onSettingChange);
+
+      const valSpan = document.createElement('span');
+      valSpan.className = 'settings-val';
+      valSpan.id = 'val-' + def.key;
+      valSpan.textContent = Number(def.value).toFixed(def.decimals || 0);
+
+      row.appendChild(slider);
+      row.appendChild(valSpan);
+    }
+    body.appendChild(row);
+  }
+}
+
+function onSettingChange(e) {
+  const key = e.target.dataset.key;
+  const def = SETTINGS_DEF.find(d => d.key === key);
+  if (!def) return;
+
+  let val;
+  if (def.type === 'color') {
+    val = e.target.value;
+    document.getElementById('hex-' + key).textContent = val;
+  } else {
+    val = parseFloat(e.target.value);
+    const dec = def.decimals || 0;
+    document.getElementById('val-' + key).textContent = val.toFixed(dec);
+  }
+
+  BG[key] = val;
+  startBackground(BG);
+}
+
 // ─── Stars & Blackhole Bouncing ───
-(function(){
+let animCanvas = null;
+let animFrameId = null;
+
+function startBackground(config) {
+  if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+  if (animCanvas && animCanvas.parentNode) {
+    animCanvas.parentNode.removeChild(animCanvas);
+    animCanvas = null;
+  }
+
   const c = document.createElement('canvas');
   c.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
   document.body.insertBefore(c, document.body.firstChild);
+  animCanvas = c;
   const ctx = c.getContext('2d');
   // Guard all arc() calls against negative radius
   const origArc = ctx.arc.bind(ctx);
@@ -172,8 +311,7 @@ document.addEventListener('keydown', function(e) {
   resize();
   window.addEventListener('resize', resize);
 
-  // Config
-  const C = typeof BG !== 'undefined' ? BG : {};
+  const C = config || {};
 
   // Stars
   const starColors = ['#ffffff','#ffe4b5','#b0c4ff','#ffb0b0','#c8e6ff','#f0d0ff'];
@@ -196,7 +334,6 @@ document.addEventListener('keydown', function(e) {
 
   // Einstein ring radius
   const ringR = bh.innerR * (C.ringMultiplier || 1.6);
-
   // Lensing range
   const lensRange = Math.min(W, H) * (C.lensingRange || 1);
 
@@ -310,18 +447,22 @@ document.addEventListener('keydown', function(e) {
     ctx.globalAlpha = 1;
     ctx.restore();
 
-    requestAnimationFrame(draw);
+    animFrameId = requestAnimationFrame(draw);
     } catch(e) { 
       if(e.message.includes('radius')) {
-        // Find which arc is failing
         const s = e.stack || '';
         console.error('RADIUS ERROR:', e.message, s.split('\n').slice(1,3).join(' → ')); 
       }
-      requestAnimationFrame(draw); 
+      animFrameId = requestAnimationFrame(draw); 
     }
   }
   draw();
-})();
+}
+
+// ─── Init ───
+const C = typeof BG !== 'undefined' ? BG : {};
+buildSettings();
+startBackground(C);
 </script>
 </body>
 </html>
