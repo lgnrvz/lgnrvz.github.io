@@ -17,9 +17,9 @@ const BG = {
   // ── Einstein Ring ──
   ringMultiplier: 3,
   ringColor: '#282828',   // ring stroke color
-  ringWidth: 0.8,          // ring stroke thickness
+  ringWidth: 0.9,          // ring stroke thickness
   ringGlowColor: '#404040', // ring glow color (hex)
-  ringGlowWidth: 1.5,         // ring glow spread (px)
+  ringGlowWidth: 1.2,         // ring glow spread (px)
 
   // ── Gravitational Lensing ──
   lensingRange: 0.85,            // 1 = whole page, 0.5 = 50% of viewport
